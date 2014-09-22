@@ -2,46 +2,48 @@
 # Config file for Zephyros OS X Window Manager #
 # ============================================ #
 
+baseKeyMods = ["cmd", "ctrl"]
+
 # Enable these to assist with testing
-# bind "R", ["cmd", "alt"], -> reloadConfig()
-# bind "T", ["cmd", "alt"], ->
+# bind "R", ["cmd", "ctrl"], -> reloadConfig()
+# bind "T", ["cmd", "ctrl"], ->
 #   log "This is a test"
 
 # maximize window
-bind "F", ["cmd", "alt"], ->
+bind "F", baseKeyMods, ->
   win = api.focusedWindow()
   win.setFrame win.screen().frameWithoutDockOrMenu()
 
 # maximize window on main screen (good for finding lost windows)
-bind "M", ["cmd", "alt"], ->
+bind "M", baseKeyMods, ->
   api.focusedWindow().setFrame api.mainScreen().frameWithoutDockOrMenu()
 
 # center on screen
-bind "C", ["cmd", "alt"], ->
+bind "C", baseKeyMods, ->
   win = api.focusedWindow()
   sRect = win.screen().frameWithoutDockOrMenu()
   wRect = win.frame()
-  wRect.origin.x = (sRect.size.width - wRect.size.width) / 2
-  wRect.origin.y = (sRect.size.height - wRect.size.height) / 2
+  wRect.origin.x = sRect.origin.x + (sRect.size.width - wRect.size.width) / 2
+  wRect.origin.y = sRect.origin.y + (sRect.size.height - wRect.size.height) / 2
   win.setFrame wRect
 
 # =========== CMD + ALT === Scale by 1/2 ============================
 
-bind "left" , ["cmd", "alt"], ->
+bind "left", baseKeyMods, ->
   win = api.focusedWindow()
   sRect = win.screen().frameWithoutDockOrMenu()
   wRect = win.frame()
   return lft 1/2 if wRect.origin.x != sRect.origin.x
   setWin { w: 1/2 }, wRect
 
-bind "up"   , ["cmd", "alt"], ->
+bind "up", baseKeyMods, ->
   win = api.focusedWindow()
   sRect = win.screen().frameWithoutDockOrMenu()
   wRect = win.frame()
   return top 1/2 if wRect.origin.y != sRect.origin.y
   setWin { h: 1/2 }, wRect
 
-bind "right", ["cmd", "alt"], ->
+bind "right", baseKeyMods, ->
   sRect = getScr()
   wRect = getWin().frame()
   sRgt = sRect.origin.x + sRect.size.width
@@ -49,7 +51,7 @@ bind "right", ["cmd", "alt"], ->
   return rgt 1/2 if Math.abs(wRgt - sRgt) > 5 # fuzzy logic for right edge
   setWin { w: 1/2, x: 1/2 }, wRect
 
-bind "down", ["cmd", "alt"], ->
+bind "down", baseKeyMods, ->
   sRect = getScr()
   wRect = getWin().frame()
   sBot = sRect.origin.y + sRect.size.height
@@ -58,19 +60,19 @@ bind "down", ["cmd", "alt"], ->
   setWin { h: 1/2, y: 1/2 }, wRect
 
 # =========== CMD + ALT + SHFT ======= Drag ========================
-
-bind "left" , ["cmd", "alt", "shift"], -> setWin { x:-1 }, getWin().frame()
-bind "right", ["cmd", "alt", "shift"], -> setWin { x: 1 }, getWin().frame()
-bind "up"   , ["cmd", "alt", "shift"], -> setWin { y:-1 }, getWin().frame()
-bind "down" , ["cmd", "alt", "shift"], -> setWin { y: 1 }, getWin().frame()
+dragKeyMods = baseKeyMods.concat "shift"
+bind "left" , dragKeyMods, -> setWin { x:-1 }, getWin().frame()
+bind "right", dragKeyMods, -> setWin { x: 1 }, getWin().frame()
+bind "up"   , dragKeyMods, -> setWin { y:-1 }, getWin().frame()
+bind "down" , dragKeyMods, -> setWin { y: 1 }, getWin().frame()
 
 # =========== CMD + ALT + CTRL =======Throw to other screen ============
-
-bind "left" , ["cmd", "alt", "ctrl"], ->
+throwKeyMods = baseKeyMods.concat "alt"
+bind "left", throwKeyMods, ->
   win = api.focusedWindow()
   win.setFrame win.screen().previousScreen().frameWithoutDockOrMenu()
 
-bind "right" , ["cmd", "alt", "ctrl"], ->
+bind "right", throwKeyMods, ->
   win = api.focusedWindow()
   win.setFrame win.screen().nextScreen().frameWithoutDockOrMenu()
 
