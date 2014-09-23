@@ -101,11 +101,11 @@ setWin = (mult, r) ->
 
   # Change the position by a muliple of the 'prior' size
   # (multiplier may be fractional, positive or negative)
-  r.origin.x += r.size.width  * mult.x if mult.x
-  r.origin.y += r.size.height * mult.y if mult.y
+  r.origin.x += Math.floor(r.size.width  * mult.x) if mult.x
+  r.origin.y += Math.floor(r.size.height * mult.y) if mult.y
 
   # Change the size by a multiplier
-  r.size.width  *= mult.w if mult.w
-  r.size.height *= mult.h if mult.h
+  r.size.width  = Math.floor(r.size.width  * mult.w) if mult.w
+  r.size.height = Math.floor(r.size.height * mult.h) if mult.h
 
   win.setFrame r
